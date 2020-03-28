@@ -20,7 +20,6 @@ const App = () => {
   const rows = grid.filter(pos => pos.x == 0)
                    .sort((lPos, rPos) => lPos.y > rPos.y ? -1 : 1)
                    .map(row => grid.filter(cell => cell.y == row.y));
-  console.log('Render')
   return (
     <div className="App">
       <header className="App-header">
