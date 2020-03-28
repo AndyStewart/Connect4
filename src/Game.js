@@ -1,10 +1,32 @@
 
 class Game {
+    constructor () {
+        this.players = ['Red', 'Blue'];
+        this.turn = 0;
+        this._grid = [];
+    }
+
     get grid() {
         return this._grid;
     }
-    constructor () {
-        this._grid = [];
+
+    get currentTurn() {
+        return this.players[this.turn];
+    }
+
+    find(x, y) {
+        return this._grid.find(pos => pos.x == x && pos.y == y)
+    }
+
+    select(column) {
+        var availableColumn = this.grid.find(pos => pos.y == column && pos.color === undefined);
+        const selectedPosition = availableColumn;
+
+        selectedPosition.color = this.currentTurn;
+        this.turn++;
+        if (this.turn >= this.players.length) {
+            this.turn = 0;
+        }
     }
 
     initialise() {
