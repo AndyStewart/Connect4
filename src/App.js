@@ -1,34 +1,37 @@
 import React, {useState} from 'react';
-import logo from './logo.svg';
 import './App.css';
 
 import Game from './Game';
 
-function Cell({cell}) {
+
+function Cell({cell, onCellClicked}) {
   return <td key={`cell_${cell.x}_${cell.y}`}
-  onClick={() => console.log(`clicked cell_${cell.x}_${cell.y}`)}></td>;
+  className={`cell_${cell.color}`}
+  onClick={() => onCellClicked(cell)}></td>;
 }
 
-function Row({cells}) {
-  return <tr>{cells.map(cell => <Cell key={`cell_${cell.x}_${cell.y}`} cell={cell} />)}</tr>;
+function Row({cells, onCellClicked}) {
+  return <tr>{cells.map(cell => <Cell key={`cell_${cell.x}_${cell.y}`} cell={cell} onCellClicked={onCellClicked} />)}</tr>;
 }
 
-const game = new Game();
-game.initialise();
-
+var game = new Game();
 const App = () => {
-  const grid = game.grid;  
+  const [grid, setGrid] = useState(game.grid, [game.currentTurn]);
   const rows = grid.filter(pos => pos.x == 0)
+                   .sort((lPos, rPos) => lPos.y > rPos.y ? -1 : 1)
                    .map(row => grid.filter(cell => cell.y == row.y));
-
+  console.log('Render')
   return (
     <div className="App">
       <header className="App-header">
-          Connect 4
+          <h1>Connect 4 - Current turn: {game.currentTurn}</h1>
       </header>
       <table data-testid="playing-grid">
         <tbody>
-          {rows.map((row, i) => <Row key={`row_${i}`} cells={row} />)}
+          {rows.map((row, i) => <Row key={`row_${i}`} cells={row} onCellClicked={cell => {
+            game.select(cell.x);
+            setGrid(game.grid.map(x => ({...x})));
+          }} />)}
         </tbody>
       </table>
     </div>
